@@ -1,30 +1,3 @@
-// import fetch from 'node-fetch';
-//
-// export default async function handler(req, res) {
-//     const { url } = req.query;
-//
-//     if (!url) {
-//         return res.status(400).json({ ok: false, error: "Missing url" });
-//     }
-//
-//     const FASTSAVER_API = "https://beta.fastsaverapi.com/media/info";
-//     const API_KEY = process.env.FASTSAVER_API_KEY;
-//
-//     try {
-//         const apiRes = await fetch(`${FASTSAVER_API}?url=${encodeURIComponent(url)}`, {
-//             headers: {
-//                 "api-key": API_KEY,
-//                 "accept": "application/json",
-//             },
-//         });
-//
-//         const data = await apiRes.json();
-//         res.json(data);
-//     } catch (err) {
-//         res.status(500).json({ ok: false, error: err.message });
-//     }
-// }
-
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
@@ -34,14 +7,15 @@ export default async function handler(req, res) {
         return res.status(400).json({ ok: false, error: "Missing url" });
     }
 
+    const API_KEY = process.env.FASTSAVER_API_KEY; // your FastSaver token
     const FASTSAVER_API = "https://fastsaverapi.com/get-info";
-    const API_KEY = process.env.FASTSAVER_API_KEY; // keep your API key if still required
 
     try {
-        const apiRes = await fetch(`${FASTSAVER_API}?url=${encodeURIComponent(url)}`, {
-            headers: {
-                "accept": "application/json",
-            },
+        // ✅ The new API requires the token as a query parameter
+        const apiUrl = `${FASTSAVER_API}?token=${API_KEY}&url=${encodeURIComponent(url)}`;
+
+        const apiRes = await fetch(apiUrl, {
+            headers: { accept: "application/json" },
         });
 
         if (!apiRes.ok) {
